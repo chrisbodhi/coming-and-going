@@ -1,7 +1,7 @@
 {
   "name": "coming-and-going",
   "version": "1.0.0",
-  "description": "",
+  "description": "Returns information about Capital Metro's 550 train line",
   "main": "index.js",
   "scripts": {
     "call": "gcloud beta functions call trains",
@@ -10,10 +10,15 @@
     "status": "gcloud beta functions describe trains",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Chris Boette <cboette@gmail.com> (https://newschematic.org)",
+  "license": "GPL-3.0",
   "dependencies": {
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
     "request": "^2.81.0",
     "request-promise": "^4.2.1"
+  },
+  "engines": {
+    "node": "8.4.0"
   }
 }
