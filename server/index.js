@@ -1,58 +1,32 @@
 'use strict';
 
-const rp = require('request-promise');
-
+const {
+  emptyResponse,
+  makeTrainRequest
+} = require('./lib/helpers');
 const {
   areTrainsRunning,
-  makeDate,
   now
 } = require('./lib/times');
-
-const fileUrl = 'https://data.texas.gov/download/cuc7-ywmd/text%2Fplain';
-
-const routeId = '550';
-
-const requestOptions = {
-  uri: fileUrl,
-  headers: {
-    'User-Agent': 'Request-Promise'
-  },
-  json: true
-};
-
-const filterData = (data) => data
-  .filter(e => e.vehicle.trip.route_id === routeId)
-  .map(({ vehicle }) => vehicle)
-  .map(({ position }) => position);
+const { requestFn } = require('./lib/request');
 
 // Present time, defined outside of `trains` function
-// definition to make it nicer to test
+// definition to make it all nicer to test
 const n = now();
 
 /**
  * Trains returns information about the running trains to the client
  *
+ * Does not execute request to outside service if trains
+ * are known to not be running, i.e. on Sundays
+ *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-function trains (req, res) {
-  if (areTrainsRunning(n)) {
-    rp(requestOptions)
-      .then(function (data) {
-        const time = makeDate(data.header.timestamp);
-        console.log('Data time:', time);
-
-        const trains = filterData(data.entity);
-
-        res.status(200).json({ time, trains });
-      })
-      .catch(function (err) {
-        console.error(`Request failed (${err.statusCode}): ${err.message}`);
-        res.status(err);
-      });
-  } else {
-    res.status(200).json({ trains: [] });
-  }
+function index (req, res) {
+  areTrainsRunning(n)
+    ? makeTrainRequest(requestFn, res)
+    : emptyResponse(res, n);
 }
 
-exports.trains = trains;
+exports.trains = index;

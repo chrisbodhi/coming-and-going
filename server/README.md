@@ -18,6 +18,7 @@ _note that the commands can be invoked with `npm run` instead of `yarn`_
 - `yarn log`: reads the logs from the `trains` function
 - `yarn status`: checks the status of the `trains` function
 - `yarn test`: tests all functions
+- `yarn test-watch`: starting watching tests for changes
 
 ### Invoking the Function
 

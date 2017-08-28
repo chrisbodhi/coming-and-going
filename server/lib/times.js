@@ -8,7 +8,7 @@ const fridayEndTime = { hour: 1, minute: 23 };
 const saturdayStartTime = { hour: 16, minute: 0 };
 const saturdayEndTime = { hour: 0, minute: 50 };
 
-const isWeekday = (m) => m.isoWeekday() > 6;
+const isWeekday = (m) => m.isoWeekday() < 6;
 const isFriday = (m) => m.isoWeekday() === 5;
 const isSaturday = (m) => m.isoWeekday() === 6;
 
@@ -58,13 +58,31 @@ const areTrainsRunning = (m) => {
   return false;
 };
 
-const makeDate = (timestamp) => {
-  const d = centralTz(moment.unix(timestamp));
-  return d.format('LLLL');
+// Takes either a JS timestamp [in ms], a regular UNIX timestamp, or a Moment object
+const makeDate = (input) => {
+  switch (typeof input) {
+    case 'number':
+      const ts = input.toString().length === 13
+        ? moment.unix(input / 1000)
+        : moment.unix(input);
+      const d = centralTz(ts);
+      return d.format('LLLL');
+    case 'object':
+    default:
+      return input.format('LLLL');
+  }
 };
 
 const now = (t = new Date()) => centralTz(t);
 
+// Exported for tests and index.js
 exports.areTrainsRunning = areTrainsRunning;
 exports.makeDate = makeDate;
 exports.now = now;
+
+// Exported just for tests
+exports.isFriday = isFriday;
+exports.isSaturday = isSaturday;
+exports.isWeekday = isWeekday;
+exports.setEndTime = setEndTime;
+exports.setStartTime = setStartTime;
