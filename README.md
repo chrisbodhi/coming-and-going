@@ -4,6 +4,8 @@ A [calm technology](https://en.wikipedia.org/wiki/Calm_technology) visualization
 
 See it live [here](https://client-lwahplxygl.now.sh/).
 
+![screenshot](.github/screenshot.png)
+
 ## Development
 - Add .env.* file to the 'client' directory
 - Run `yarn` in both the 'client' and 'server' directories to install the necessary packages.
