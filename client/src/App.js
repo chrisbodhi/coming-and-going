@@ -16,15 +16,6 @@ const stations = [{
   key: 'Downtown',
   icon: 'marker.svg',
   defaultAnimation: 3,
-},
-{
-  position: {
-    lat: 30.586453,
-    lng: -97.855600
-  },
-  key: 'Leander',
-  icon: 'marker.svg',
-  defaultAnimation: 3
 }];
 
 class App extends Component {
@@ -38,9 +29,7 @@ class App extends Component {
   }
 
   componentDidMount () {
-    console.log('did mount');
     const processId = setInterval(this._fetchData, 5000);
-    console.log({ processId });
     this.setState({ processId });
   }
 
@@ -49,7 +38,6 @@ class App extends Component {
   }
 
   _fetchData = () => {
-    console.log('about to fetch', Date.now());
     const processId = this.state.processId;
     fetch(trainsURL)
       .then(data => data.json())
