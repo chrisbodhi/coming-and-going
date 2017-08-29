@@ -1,43 +1,35 @@
+/* eslint-env browser  */
 import React, { Component } from 'react';
 
-// import Northward from './Northward';
-// import Southward from './Southward';
 import Map from './Map';
 
 import './App.css';
 
 const googleMapURL = `https://maps.googleapis.com/maps/api/js?v=3.29&libraries=places,geometry&key=${process.env.REACT_APP_GMAPS_API_KEY}`;
+const trainsURL = process.env.REACT_APP_TRAINS_URL;
+
+const stations = [{
+  position: {
+    lat: 30.265002,
+    lng: -97.739234,
+  },
+  key: 'Downtown',
+  icon: 'marker.svg',
+  defaultAnimation: 3,
+}];
 
 class App extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      markers: [
-        {
-          position: {
-            lat: 30.265000,
-            lng: -97.739258
-          },
-          key: `Downtown Station`,
-          defaultAnimation: 4
-        },
-        {
-          position: {
-            lat: 30.262177,
-            lng: -97.727505
-          },
-          key: `Plaza Saltillo Station`,
-          defaultAnimation: 4
-        }
-      ],
+      data: [],
       position: 0,
       processId: 0
     };
   }
 
-  componentWillUpdate () {
-    const noop = () => {};
-    const processId = setInterval(noop, 1000);
+  componentDidMount () {
+    const processId = setInterval(this._fetchData, 5000);
     this.setState({ processId });
   }
 
@@ -45,8 +37,18 @@ class App extends Component {
     clearInterval(this.state.processId);
   }
 
+  _fetchData = () => {
+    const processId = this.state.processId;
+    fetch(trainsURL)
+      .then(data => data.json())
+      .then(json => this.setState({ data: [...this.state.data, json] }))
+      .catch(err => {
+        console.error(err);
+        clearInterval(processId);
+      });
+  }
+
   render () {
-    console.log('this.state', this.state);
     return (
       <div className='App'>
         <Map
@@ -71,7 +73,8 @@ class App extends Component {
           mapElement={
             <div style={{ height: `100%` }} />
             }
-          markers={this.state.markers}
+          markers={stations}
+          positions={this.state.data}
           />
       </div>
     );

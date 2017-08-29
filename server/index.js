@@ -24,6 +24,10 @@ const n = now();
  * @param {Object} res Cloud Function response context.
  */
 function index (req, res) {
+  // CORS configuration
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET');
+
   areTrainsRunning(n)
     ? makeTrainRequest(requestFn, res)
     : emptyResponse(res, n);
