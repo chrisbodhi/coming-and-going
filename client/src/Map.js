@@ -9,11 +9,12 @@ import withScriptjs from 'react-google-maps/lib/async/withScriptjs';
 
 import styles from './maps_style';
 
-/*
-const lineData = (data) => data
-  .trains
-  .map(({latitude, longitude}) => ({ lat: latitude, lng: longitude }));
-*/
+const lineData = (data) => {
+  console.log(data.trains);
+  return data
+    .trains
+    .map(({latitude, longitude}) => ({ lat: latitude, lng: longitude }));
+};
 
 const Map = withScriptjs(withGoogleMap((props) => (
   <GoogleMap
@@ -23,15 +24,22 @@ const Map = withScriptjs(withGoogleMap((props) => (
     defaultZoom={11}
     onClick={props.onMapClick}
   >
-    <Polyline
-      path={props.markers.map(m => m.position)}
-      options={{
-        geodesic: true,
-        strokeColor: `red`,
-        strokeOpacity: 1,
-        strokeWeight: 2
-      }}
-  />
+    {props.markers.map((mark, index) => {
+      return <Marker
+        {...mark}
+       />;
+    })}
+    {props.positions.map((pos, index) => {
+      return <Polyline
+        path={lineData(pos)}
+        options={{
+          geodesic: true,
+          strokeColor: `red`,
+          strokeOpacity: 1,
+          strokeWeight: 2
+        }}
+      />;
+    })};
   </GoogleMap>
 )));
 
